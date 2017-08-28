@@ -1,0 +1,26 @@
+{
+    "name": "diabetus",
+    "version": "0.1.0",
+    "private": true,
+    "dependencies": {
+        "d3": "^4.10.0",
+        "install": "^0.10.1",
+        "npm": "^5.3.0",
+        "react": "^15.6.1",
+        "react-dom": "^15.6.1",
+        "react-easy-chart": "^0.1.13",
+        "react-faux-dom": "^4.0.3",
+        "react-file-reader": "^1.1.1",
+        "react-linechart": "^1.1.12",
+        "react-router": "^4.2.0",
+        "react-scripts": "1.0.12",
+        "superagent": "^3.6.0"
+    },
+    "scripts": {
+        "start": "react-scripts start",
+        "build": "react-scripts build",
+        "test": "react-scripts test --env=jsdom",
+        "eject": "react-scripts eject",
+        "deploy": "yarn run build && surge -p build -d diabetus.surge.sh"
+    }
+}
