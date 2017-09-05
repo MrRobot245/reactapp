@@ -15,6 +15,10 @@
     font-size: 14px;
     line-height: 26px;
 }
+.custom-tooltip {
+    background-color: white;
+    border: 1px solid grey;
+}
 .mainContent {
     padding-left: 20px;
     padding-right: 20px;
