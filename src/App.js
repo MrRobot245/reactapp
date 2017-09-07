@@ -244,7 +244,7 @@ class App extends Component {
 					<button className='btn'>Upload</button>
 				</ReactFileReader>
 				<br/>
-				<a href="https://github.com/MrRobot245/reactapp/blob/master/csvExample.csv" download> Download Link to Example Data</a>
+				<a href="https://github.com/MrRobot245/reactapp/raw/master/csvExample.csv" download> Download Link to Example Data</a>
 				<br/>
 
 			{csvData.length > 0 &&
