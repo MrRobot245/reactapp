@@ -99,8 +99,8 @@ class App extends Component {
 		var totalCarb=0.0;
 
 
-		console.log(this.state.startDate.format("MMM Do YYYY"));
-		console.log(this.state.endDate.format("MMM Do YYYY"));
+		// console.log(this.state.startDate.format("MMM Do YYYY"));
+		// console.log(this.state.endDate.format("MMM Do YYYY"));
 		for(var pre=0; pre < 11 ; pre++)
 		{
 
@@ -123,9 +123,9 @@ class App extends Component {
 				var realEndDate= moment(importEndDate,"DD/MM/YYYY");
 				var endObject= realEndDate.format("MMM Do YYYY");
 				var days = realEndDate.diff(realStartDate, 'days');
-				console.log('///');
-				console.log(this.state.startDate.format("MMM Do YYYY"));
-				console.log(initStart.format("MMM Do YYYY"));
+				// console.log('///');
+				// console.log(this.state.startDate.format("MMM Do YYYY"));
+				// console.log(initStart.format("MMM Do YYYY"));
 
 				if(this.state.startDate.format("MMM Do YYYY") === initStart.format("MMM Do YYYY"))
 				{
@@ -138,7 +138,7 @@ class App extends Component {
 				});
 			}
 			else{
-				var days = this.state.endDate.diff(this.state.startDate, 'days');
+				days = this.state.endDate.diff(this.state.startDate, 'days');
 					this.setState({
 						days:days,
 					});
@@ -274,7 +274,7 @@ class App extends Component {
 							<div className="mainContent">
 								<div className="row">
 									<div className="col-sm-12 col-md-12 graphContent">
-									<DateRangePicker startDate={this.state.startDate} endDate={this.state.endDate} onApply={this.handleDateEvent} ranges={this.state.ranges}>
+									<DateRangePicker startDate={this.state.startDate} endDate={this.state.endDate} onApply={this.handleDateEvent} ranges={this.state.ranges} minDate={this.state.startDate} maxDate={this.state.endDate} >
 									<BS.Button className="selected-date-range-btn datePickerClass">
 										  <div className="pull-left"><BS.Glyphicon glyph="calendar" /></div>
 										  <div className="pull-right">
