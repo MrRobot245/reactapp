@@ -58,6 +58,8 @@ class App extends Component {
 			startDate:moment("01/01/1999","DD/MM/YYYY"),
 			endDate:moment("01/01/2100","DD/MM/YYYY"),
 			days:0,
+			initialStart:moment(),
+			initialEnd:moment(),
 			testCount:0,
 			totalInsulin:0,
 			totalCarb:0,
@@ -135,6 +137,8 @@ class App extends Component {
 					days:days,
 					endObject:endObject,
 					startObject:startObject,
+					initialStart:realStartDate,
+					initialEnd:realEndDate,
 				});
 			}
 			else{
@@ -274,7 +278,7 @@ class App extends Component {
 							<div className="mainContent">
 								<div className="row">
 									<div className="col-sm-12 col-md-12 graphContent">
-									<DateRangePicker startDate={this.state.startDate} endDate={this.state.endDate} onApply={this.handleDateEvent} ranges={this.state.ranges} minDate={this.state.startDate} maxDate={this.state.endDate} >
+									<DateRangePicker startDate={this.state.startDate} endDate={this.state.endDate} onApply={this.handleDateEvent} ranges={this.state.ranges} minDate={this.state.initialStart} maxDate={this.state.initialEnd} >
 									<BS.Button className="selected-date-range-btn datePickerClass">
 										  <div className="pull-left"><BS.Glyphicon glyph="calendar" /></div>
 										  <div className="pull-right">
