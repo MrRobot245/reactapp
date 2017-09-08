@@ -8,6 +8,7 @@ import PropTypes from 'prop-types'; // ES6
 import moment from 'moment';
 
 var BS = require('react-bootstrap');
+var blobContent= require('./test.blob');
 var DateRangePicker = require('react-bootstrap-daterangepicker');
 require('./datepicker.css');
 var createReactClass = require('create-react-class');
@@ -28,7 +29,7 @@ const CustomTooltip  = createReactClass({
 			var dateOut= dateObject.format("h:mm A");
 			return (
 				<div className="custom-tooltip">
-					<p className="intro">{payload[0].value} mmol/L</p>
+				<p className="intro">{payload[0].value} mmol/L</p>
 				<p className="intro2">{day} {dateOut}<br/>{label}</p>
 				</div>
 			);
@@ -69,16 +70,10 @@ class App extends Component {
 			valid:0,
 			isFilter:0,
 			graphArray:[],
-			ranges: {
-				'Today': [moment(), moment()],
-				'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-				'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-				'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-				'This Month': [moment().startOf('month'), moment().endOf('month')],
-				'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-			},
+			ranges: {},
 		};
 		this.handleDateEvent = this.handleDateEvent.bind(this);
+		this.testinput =this.testinput.bind(this);
 
 	}
 	loadCSVtoState(input){
@@ -100,9 +95,6 @@ class App extends Component {
 		var corF=0.0;
 		var totalCarb=0.0;
 
-
-		// console.log(this.state.startDate.format("MMM Do YYYY"));
-		// console.log(this.state.endDate.format("MMM Do YYYY"));
 		for(var pre=0; pre < 11 ; pre++)
 		{
 
@@ -125,80 +117,98 @@ class App extends Component {
 				var realEndDate= moment(importEndDate,"DD/MM/YYYY");
 				var endObject= realEndDate.format("MMM Do YYYY");
 				var days = realEndDate.diff(realStartDate, 'days');
-				// console.log('///');
-				// console.log(this.state.startDate.format("MMM Do YYYY"));
-				// console.log(initStart.format("MMM Do YYYY"));
 
 				if(this.state.startDate.format("MMM Do YYYY") === initStart.format("MMM Do YYYY"))
 				{
-				this.setState({
-					startDate:realStartDate,
-					endDate: realEndDate,
-					days:days,
-					endObject:endObject,
-					startObject:startObject,
-					initialStart:realStartDate,
-					initialEnd:realEndDate,
-				});
-			}
-			else{
-				days = this.state.endDate.diff(this.state.startDate, 'days');
+					if(this.state.startDate.format("MMM Do YYYY") < moment().startOf('month').format("MMM Do YYYY"))
+					{
+						this.setState({
+							ranges: {
+								'Today': [moment(), moment()],
+								'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+								'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+								'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+								'This Month': [moment().startOf('month'), moment().endOf('month')],
+							}
+						});
+					}
+					else if(this.state.startDate.format("MMM Do YYYY") < moment().subtract(1, 'month').format("MMM Do YYYY"))
+					{
+						this.setState({
+							ranges: {
+								'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+							}
+						});
+					}
+					else{
+						this.setState({
+							ranges: {
+							}
+
+						});
+					}
+
+					this.setState({
+						startDate:realStartDate,
+						endDate: realEndDate,
+						days:days,
+						endObject:endObject,
+						startObject:startObject,
+						initialStart:realStartDate,
+						initialEnd:realEndDate,
+					});
+				}
+				else{
+					days = this.state.endDate.diff(this.state.startDate, 'days');
 					this.setState({
 						days:days,
 					});
-			}
-
+				}
 			}
 		}
-
 
 		for (var i = 0; i < arr.length-1; i++) {
 
 			var str = arr[i];
 			var res=str.split(",");
-
 			var graphDate= moment(res[1],"DD/MM/YYYY");
-			// console.log(graphDate.format("MMM Do YYYY"));
-
 			if(graphDate > this.state.startDate && graphDate < this.state.endDate)
 			{
-
-
-			if(!isNaN(parseFloat(res[32],10))){
-				totalInsulin=totalInsulin+parseFloat(res[32],10);
+				if(!isNaN(parseFloat(res[32],10))){
+					totalInsulin=totalInsulin+parseFloat(res[32],10);
+				}
+				if(!isNaN(parseFloat(res[23],10)))
+				{
+					totalCarb=totalCarb+ parseFloat(res[23],10);
+					this.setState({
+						totalCarb:totalCarb,
+					});
+				}
+				if(!isNaN(parseFloat(res[22],10)))
+				{
+					corF=parseFloat(res[22],10);
+					this.setState({
+						corF:corF,
+					});
+				}
+				if(!isNaN(parseFloat(res[5],10)))
+				{
+					graphDate= moment(res[1],"DD/MM/YYYY");
+					var graphObject= graphDate.format("MMM Do YYYY");
+					graphArray.push({date: graphObject,y: parseFloat(res[5],10),time:res[2]});
+					testCount++;
+					avg=avg+parseFloat(res[5],10);
+					this.setState({
+						avg:avg,
+						testCount:testCount,
+						valid:1,
+					});
+					i++;
+				}
 			}
-			if(!isNaN(parseFloat(res[23],10)))
-			{
-				totalCarb=totalCarb+ parseFloat(res[23],10);
-				this.setState({
-					totalCarb:totalCarb,
-				});
-			}
-			if(!isNaN(parseFloat(res[22],10)))
-			{
-				corF=parseFloat(res[22],10);
-				this.setState({
-					corF:corF,
-				});
-			}
-			if(!isNaN(parseFloat(res[5],10)))
-			{
-				graphDate= moment(res[1],"DD/MM/YYYY");
-				var graphObject= graphDate.format("MMM Do YYYY");
-				graphArray.push({date: graphObject,y: parseFloat(res[5],10),time:res[2]});
-				testCount++;
-				avg=avg+parseFloat(res[5],10);
-				this.setState({
-					avg:avg,
-					testCount:testCount,
-					valid:1,
-				});
-				i++;
-			}
-}
 		}
 
-		var a1c= ((2.59 + (avg/testCount)) / 1.59);
+ 		var a1c= ((2.59 + (avg/testCount)) / 1.59);
 		a1c=a1c.toFixed(2);
 		totalInsulin=totalInsulin.toFixed(2);
 		this.setState({
@@ -208,8 +218,24 @@ class App extends Component {
 			mandArray:mandArray,
 
 		});
-			this.setState({ loading:false });
+		this.setState({ loading:false });
 
+	}
+	testinput(event)
+	{
+		console.log(blobContent);
+			var input="";
+
+		// var reader = new FileReader();
+		// var file=new File(["https://github.com/MrRobot245/reactapp/raw/master/csvExample.csv"],"csvExample.csv");
+		// console.log(file);
+		// console.log
+		// reader.readAsDataURL(file[0]);
+		// reader.onload = ()=>{input=reader.result;
+		// 	console.log(reader.result);
+		// 	// this.setState({ data: reader.result });
+		// 	// this.loadCSVtoState(input);
+		// };
 	}
 	handleDateEvent(event, picker) {
 		this.setState({
@@ -218,7 +244,7 @@ class App extends Component {
 			endDate: picker.endDate,
 		});
 		this.loadCSVtoState(this.state.data)
-       }
+	}
 	handleFiles = files => {
 		var reader = new FileReader();
 		var input="";
@@ -237,86 +263,87 @@ class App extends Component {
 		var label = start + ' - ' + end;
 		return (
 			<div className="App">
-				<div className="App-header">
-					<h2>Diabetes Graphing Example</h2>
-				</div>
-				<br/>
-				Please upload your CSV for your results
-				<br/>
-				<br/>
-				<ReactFileReader handleFiles={this.handleFiles} fileTypes={'.csv'}>
-					<button className='btn'>Upload</button>
-				</ReactFileReader>
-				<br/>
-				<a href="https://github.com/MrRobot245/reactapp/raw/master/csvExample.csv" download> Download Link to Example Data</a>
-				<br/>
+			<div className="App-header">
+			<h2>Diabetes Graphing Example</h2>
+			</div>
+			<br/>
+			Please upload your CSV for your results
+			<br/>
+			<br/>
+			<ReactFileReader handleFiles={this.handleFiles} fileTypes={'.csv'}>
+			<button className='btn'>Upload</button>
+			</ReactFileReader>
+			<br/>
+			<a href="csvExample.csv" download> Download Link to Example Data</a>
+			<br/>
+			{/*<button onClick={this.testinput} className='btn'>Test Data</button>*/}
+			<br/>
 
 			{csvData.length > 0 &&
-					<div className="csvData">
-							Name: {this.state.importName}<br/>
-							Projected A1C: {this.state.a1c}%<br/><br/>
+				<div className="csvData">
+				Name: {this.state.importName}<br/>
+				Projected A1C: {this.state.a1c}%<br/><br/>
+
+				Correction Factor: {this.state.corF}<br/>
+				Days Measured: {this.state.days}<br/>
+
+				Blood Sugar Tests: {this.state.testCount}<br/>
+				Average Tests Per Day: {(this.state.testCount/this.state.days).toFixed(0)}<br/>
+				Total Carbs: {this.state.totalCarb}<br/>
+				Average Carbs: {(this.state.totalCarb/this.state.days).toFixed(2)}<br/>
+
+				Insulin Given: {this.state.totalInsulin} Units<br/>
+				Average Insulin Per Day: {(this.state.totalInsulin/this.state.days).toFixed(2)} Units <br/>
+
+				</div>
 
 
-							Correction Factor: {this.state.corF}<br/>
-							Days Measured: {this.state.days}<br/>
-
-							Blood Sugar Tests: {this.state.testCount}<br/>
-							Average Tests Per Day: {(this.state.testCount/this.state.days).toFixed(0)}<br/>
-							Total Carbs: {this.state.totalCarb}<br/>
-							Average Carbs: {(this.state.totalCarb/this.state.days).toFixed(2)}<br/>
-
-							Insulin Given: {this.state.totalInsulin} Units<br/>
-							Average Insulin Per Day: {(this.state.totalInsulin/this.state.days).toFixed(2)} Units <br/>
-
-						</div>
-
-
-					}
-
-					{csvData.length > 0 &&
-
-							<div className="mainContent">
-								<div className="row">
-									<div className="col-sm-12 col-md-12 graphContent">
-									<DateRangePicker startDate={this.state.startDate} endDate={this.state.endDate} onApply={this.handleDateEvent} ranges={this.state.ranges} minDate={this.state.initialStart} maxDate={this.state.initialEnd} >
-									<BS.Button className="selected-date-range-btn datePickerClass">
-										  <div className="pull-left"><BS.Glyphicon glyph="calendar" /></div>
-										  <div className="pull-right">
-											  <span>
-												  {label}
-											  </span>
-											  <span className="caret"></span>
-										  </div>
-									  </BS.Button>
-									  </DateRangePicker>
-									  <br/>
-										<h1>Blood Glucose Chart</h1>
-
-										<ResponsiveContainer height={300} width='100%'>
-											<LineChart data={this.state.graphArray}>
-												<CartesianGrid strokeDasharray="3 3" />
-												<XAxis dataKey="date" padding={{left: 30, right: 30}} />
-												<YAxis padding={{top: 30}}/>
-												<Tooltip content={<CustomTooltip/>}/>
-												<Line type="monotone" dataKey="y" stroke="#CC0000" dot={<CustomizedDot />} activeDot={<CustomizedActiveDot />} />
-												<Legend
-													payload={
-														[
-															{ id: 'y', value: 'mmol/L', type: 'line', color: '#CC0000'}
-														]
-													}  layout="horizontal" verticalAlign="bottom" align="center"
-													/>
-											</LineChart>
-										</ResponsiveContainer>
-
-									</div>
-								</div>
-							</div>
-						}
-
-					</div>
-				);
 			}
-		}
 
-		export default App;
+			{csvData.length > 0 &&
+
+				<div className="mainContent">
+				<div className="row">
+				<div className="col-sm-12 col-md-12 graphContent">
+				<DateRangePicker startDate={this.state.startDate} endDate={this.state.endDate} onApply={this.handleDateEvent} ranges={this.state.ranges} minDate={this.state.initialStart} maxDate={this.state.initialEnd} >
+				<BS.Button className="selected-date-range-btn datePickerClass">
+				<div className="pull-left"><BS.Glyphicon glyph="calendar" /></div>
+				<div className="pull-right">
+				<span>
+				{label}
+				</span>
+				<span className="caret"></span>
+				</div>
+				</BS.Button>
+				</DateRangePicker>
+				<br/>
+				<h1>Blood Glucose Chart</h1>
+
+				<ResponsiveContainer height={300} width='100%'>
+				<LineChart data={this.state.graphArray}>
+				<CartesianGrid strokeDasharray="3 3" />
+				<XAxis dataKey="date" padding={{left: 30, right: 30}} />
+				<YAxis padding={{top: 30}}/>
+				<Tooltip content={<CustomTooltip/>}/>
+				<Line type="monotone" dataKey="y" stroke="#CC0000" dot={<CustomizedDot />} activeDot={<CustomizedActiveDot />} />
+				<Legend
+				payload={
+					[
+						{ id: 'y', value: 'mmol/L', type: 'line', color: '#CC0000'}
+					]
+				}  layout="horizontal" verticalAlign="bottom" align="center"
+				/>
+				</LineChart>
+				</ResponsiveContainer>
+
+				</div>
+				</div>
+				</div>
+			}
+
+			</div>
+		);
+	}
+}
+
+export default App;

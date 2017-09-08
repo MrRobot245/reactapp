@@ -23,7 +23,7 @@
 .datePickerClass {
     float: left;
     width: 100%;
-    max-width: 275px;
+    max-width: 250px;
 }
 .datePickerClass .caret {
     margin-left: 10px!important;
