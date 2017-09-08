@@ -1,11 +1,12 @@
 {
-  "main.css": "static/css/main.fcd3e62c.css",
-  "main.css.map": "static/css/main.fcd3e62c.css.map",
-  "main.js": "static/js/main.aeb4eedc.js",
-  "main.js.map": "static/js/main.aeb4eedc.js.map",
+  "main.css": "static/css/main.a25f76e7.css",
+  "main.css.map": "static/css/main.a25f76e7.css.map",
+  "main.js": "static/js/main.d208dcbe.js",
+  "main.js.map": "static/js/main.d208dcbe.js.map",
   "static/media/glyphicons-halflings-regular.eot": "static/media/glyphicons-halflings-regular.f4769f9b.eot",
   "static/media/glyphicons-halflings-regular.svg": "static/media/glyphicons-halflings-regular.89889688.svg",
   "static/media/glyphicons-halflings-regular.ttf": "static/media/glyphicons-halflings-regular.e18bbf61.ttf",
   "static/media/glyphicons-halflings-regular.woff": "static/media/glyphicons-halflings-regular.fa277232.woff",
-  "static/media/glyphicons-halflings-regular.woff2": "static/media/glyphicons-halflings-regular.448c34a5.woff2"
+  "static/media/glyphicons-halflings-regular.woff2": "static/media/glyphicons-halflings-regular.448c34a5.woff2",
+  "static/media/test.blob": "static/media/test.7042e1c7.blob"
 }
